@@ -1,13 +1,13 @@
 const userModel = require('../../setups/dbSetup/mongo.setup');
 const log = require('../../setups/logger');
 const router = require('express').Router();
-const validate = require('../passwordValidator/passwordValidation').validate;
+const {validate} = require('../passwordValidator/passwordValidation');
 
 router.post('/', async (req, res) => {
-    username = req.body.username;
-    password = req.body.password;
+    const username = req.body.username;
+    const password = req.body.password;
     console.log(username, password);
-    userModel.findOne({ username: req.body.username }, function (err, user) {
+    userModel.findOne({ username: req.body.username }, async function (err, user) {
         if (user) {
             if (err) {
                 log(data = {
@@ -19,18 +19,31 @@ router.post('/', async (req, res) => {
             }
             else {
                 if (validate(req.body.password, user.password)) {
-                    console.log('yes');
+                    res.send({
+                        'name': 'Auth Success',
+                        'status': 201,
+                        'message': 'Authentication Successfull',
+                        'statusCode': 201
+                    });
                 } else {
-                    console.log('not');
+                    res.send({
+                        'name': 'Auth Error',
+                        'status': 204,
+                        'message': 'Password Incorrect!',
+                        'statusCode': 204
+                    });
                 }
             }
         }
         else{
-            console.log('user does not exixts');
+            res.send({
+                'name': 'Auth Error',
+                'status': 204,
+                'message': 'User Does not Exist!',
+                'statusCode': 204
+            });
         }
     });
-
-    res.send('w');
 })
 
 module.exports = router;
