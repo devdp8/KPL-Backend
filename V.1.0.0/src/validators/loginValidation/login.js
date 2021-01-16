@@ -1,7 +1,7 @@
 const userModel = require('../../setups/dbSetup/mongo.setup');
 const log = require('../../setups/logger');
 const router = require('express').Router();
-const {validate} = require('../passwordValidator/passwordValidation');
+const { validate } = require('../passwordValidator/passwordValidation');
 
 router.post('/', async (req, res) => {
     const username = req.body.username;
@@ -9,6 +9,7 @@ router.post('/', async (req, res) => {
     console.log(username, password);
     userModel.findOne({ username: req.body.username }, async function (err, user) {
         if (user) {
+            console.log(user);
             if (err) {
                 log(data = {
                     'name': 'error',
@@ -20,10 +21,23 @@ router.post('/', async (req, res) => {
             else {
                 if (validate(req.body.password, user.password)) {
                     res.send({
-                        'name': 'Auth Success',
-                        'status': 201,
-                        'message': 'Authentication Successfull',
-                        'statusCode': 201
+                        "msg": {
+                            'name': 'Auth Success',
+                            'status': 201,
+                            'message': 'Authentication Successfull',
+                            'statusCode': 201
+                        },
+                        "data": {
+                            "username": user.username,
+                            "image": user.image,
+                            "designation": user.designation,
+                            "role": user.role,
+                            "zone": user.zone,
+                            "wing": user.wing,
+                            "workerID": user.workerID,
+                            "image": user.image,
+                            "department": user.department
+                        }
                     });
                 } else {
                     res.send({
@@ -35,7 +49,7 @@ router.post('/', async (req, res) => {
                 }
             }
         }
-        else{
+        else {
             res.send({
                 'name': 'Auth Error',
                 'status': 204,
