@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const { connection, tab } = require('../dbSetup/mongo.setup');
+const mysql = require('../dbSetup/mysql.setup');
 const routes = require('../../routes');
 const versionMonitor = require('../../versionMonitor');
 const log = require('../logger');
